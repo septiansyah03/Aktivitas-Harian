@@ -1,0 +1,131 @@
+body {
+    background-color: #000000; 
+    color: #ffffff; 
+    font-family: 'Ubuntu', sans-serif; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #00ff00; 
+}
+
+a {
+    color: #1e90ff; 
+    text-decoration: none; 
+}
+
+a:hover {
+    color: #87cefa; 
+}
+
+table {
+    background-color: #121212; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); 
+}
+
+.table th, .table td {
+    color: #ffffff; 
+}
+
+.btn {
+    border-radius: 4px; 
+}
+
+.btn-primary {
+    background-color: #007bff; 
+    color: #ffffff; 
+}
+
+.btn-success {
+    background-color: #28a745; 
+    color: #ffffff; 
+}
+
+.modal-content {
+    background-color: #212121; 
+    color: #ffffff; 
+}
+
+input.form-control {
+    background-color: #333; 
+    color: #ffffff; 
+    border: 1px solid #444; 
+}
+
+input.form-control:focus {
+    background-color: #a3a3a3; 
+    border-color: #1e90ff; 
+    box-shadow: 0 0 5px rgba(30, 144, 255, 0.5); 
+}
+.fade-in {
+    opacity: 0; 
+    transition: opacity 1s ease-in; 
+}
+
+.fade-in.visible {
+    opacity: 1; 
+}
+
+
+.marquee {
+    overflow: hidden;
+    white-space: nowrap;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.marquee-content {
+    display: inline-block;
+    position: absolute;
+    animation: marquee 10s linear infinite; 
+    color: #00ff00; 
+    font-weight: bold;
+}
+
+@keyframes marquee {
+    from {
+        transform: translateX(100%); 
+    }
+    to {
+        transform: translateX(-100%); 
+    }
+}
+.modal {
+    transform: scale(0);
+    transition: transform 0.5s;
+  }
+  .modal.show {
+    transform: scale(1);
+  }
+
+@media (max-width: 576px) {
+    
+    .modal-dialog {
+        width: 90%;
+        margin: auto;
+    }
+    
+    
+    .table td, .table th {
+        font-size: 0.8em;
+        padding: 5px;
+    }
+    
+    
+    .form-group label, .form-control {
+        font-size: 0.9em;
+    }
+    
+    
+    .btn {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+}
+@media (max-width: 576px) {
+    .swal2-popup {
+        width: 90% !important;
+        font-size: 0.9em !important;
+    }
+}
+
