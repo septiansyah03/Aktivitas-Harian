@@ -1,11 +1,10 @@
-
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysW2Yvml3yzx3GblS0XQE92klUodnoyeK3fQD6714wf48vJpB7whi1XIxDNeN_U27g/exec"; 
 function openModal() {
     $('#inputModal').modal('show');
     $('#inputForm')[0].reset(); 
 }
 
-
-function submitForm() {
+async function submitForm() {
     const tanggal = document.getElementById('tanggal').value;
     const aktivitas = document.getElementById('aktivitas').value;
     const detailAktivitas = document.getElementById('detailAktivitas').value;
@@ -16,18 +15,17 @@ function submitForm() {
 
     const jumlah = waktuEfektif * volume;
 
-    
     if (!tanggal || !aktivitas || !detailAktivitas || !waktuEfektif || !waktuMulai || !waktuAkhir || !volume) {
         Swal.fire({
             icon: 'warning',
             title: 'Waduh...',
-            text: 'Harap lengkapi semua isianya sebelum klik simpan.',
+            
+ 
+text: 'Harap lengkapi semua isianya sebelum klik simpan.',
         });
         return; 
     }
 
-    
-    
     const activity = {
         tanggal,
         aktivitas,
@@ -39,81 +37,105 @@ function submitForm() {
         jumlah,
     };
 
-    
-    const activities = JSON.parse(localStorage.getItem('activities')) || [];
-    activities.push(activity);
-
-    
-    localStorage.setItem('activities', JSON.stringify(activities));
-
-    
-    Swal.fire({
-        icon: 'success',
-        title: 'Yeayy..berhasil!',
-        text: 'Aktivitas kamu berhasil disimpan.',
-        timer: 1500,
-        showConfirmButton: false
+        const response = await fetch(SCRIPT_URL + "?action=submitData", {
+        method: "POST",
+        
+        header: { "Content-Type": "application/json" },
+        body: JSON.stringify(activity),
     });
 
-    
-    document.getElementById('inputForm').reset();
-    $('#inputModal').modal('hide');
+    const result = await response.json();
 
-    
-    displayActivities();
+    if (result.status === "success") {
+        Swal.fire({
+            icon: 'success',
+            title: 'Yeayy..berhasil!',
+            text: result.message,
+            timer: 1500,
+            showConfirmButton: false
+        });
+        $('#inputModal').modal('hide');
+        displayActivities();     }
 }
 
-
-function displayActivities() {
-    const activities = JSON.parse(localStorage.getItem('activities')) || [];
+async function displayActivities() {
+    const response = await fetch(SCRIPT_URL + "?action=getAllData");
+    const activities = await response.json();
     const tabelKinerja = document.getElementById('tabelKinerja');
-    tabelKinerja.innerHTML = ''; 
+    tabelKinerja.innerHTML = '';
 
-    let totalWaktu = 0; 
-    
+    let totalWaktuEfektif = 0; 
     if (activities.length === 0) {
-        const noDataRow = `<tr><td colspan="9" class="text-center">Belum ada jurnal harian!</td></tr>`;
-        tabelKinerja.insertAdjacentHTML('beforeend', noDataRow);
+        tabelKinerja.innerHTML = `<tr><td colspan="9" class="text-center">Belum ada aktivitas yang dinput!</td></tr>`;
     } else {
         activities.forEach((activity, index) => {
+            const formattedDate = formatDate(new Date(activity[0]));
+            const startTime = formatTime(activity[4]);
+            const endTime = formatTime(activity[5]);
+
+                        const waktuEfektif = parseInt(activity[6]) || 0;
+
+                        totalWaktuEfektif += activity[7]; 
+
             const row = `<tr>
-                <td>${activity.tanggal}</td>
-                <td>${activity.aktivitas}</td>
-                <td>${activity.detailAktivitas}</td>
-                <td>${activity.waktuEfektif}</td>
-                <td>${activity.waktuMulai}</td>
-                <td>${activity.waktuAkhir}</td>
-                <td>${activity.volume}</td>
-                <td>${activity.jumlah}</td>
+                <td>${formattedDate}</td>
+                <td>${activity[1]}</td>
+                <td>${activity[2]}</td>
+                <td>${activity[3]}</td>
+                <td>${startTime}</td>
+                <td>${endTime}</td>
+                <td>${waktuEfektif}</td>
+                <td>${activity[7]}</td>
                 <td><button class="btn btn-danger" onclick="deleteActivity(${index})">Hapus</button></td>
             </tr>`;
             tabelKinerja.insertAdjacentHTML('beforeend', row);
-            totalWaktu += parseInt(activity.jumlah); 
         });
-    }
 
-    document.getElementById('totalWaktu').textContent = totalWaktu; 
+                const totalRow = `<tr>
+            <td colspan="8" class="text-right">Total Waktu Efektif:</td>
+            <td>${totalWaktuEfektif} menit</td>
+        </tr>`;
+        tabelKinerja.insertAdjacentHTML('beforeend', totalRow);
+    }
 }
 
+function formatDate(date) {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return date.toLocaleDateString('id-ID', options); }
 
-function deleteActivity(index) {
-    Swal.fire({
+function formatTime(time) {
+    if (!time || time === '1899-12-30T00:00:00.000Z') return '00:00'; 
+
+    const date = new Date(time);
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
+}
+
+async function addActivity(activity) {
+        
+        await displayActivities();
+}
+
+async function deleteActivity(index) {
+        const result = await Swal.fire({
         title: 'Yakin nih mau dihapus?',
-        text: "Data aktivitas ini akan dihapus dan tidak dapat dikembalikan!",
+        text: "Aktivitas ini akan dihapus dan tidak dapat dikembalikan!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
         confirmButtonText: 'Ya, hapus!',
         cancelButtonText: 'Sebentar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            
-            const activities = JSON.parse(localStorage.getItem('activities'));
-            activities.splice(index, 1); 
-            localStorage.setItem('activities', JSON.stringify(activities)); 
+    });
 
-            
+        if (result.isConfirmed) {
+        const response = await fetch(SCRIPT_URL + "?action=deleteData&rowIndex=" + index, {
+            method: "POST"
+        });
+        const deleteResult = await response.json();
+
+        if (deleteResult.status === "success") {
             Swal.fire({
                 icon: 'success',
                 title: 'Dihapus!',
@@ -121,101 +143,133 @@ function deleteActivity(index) {
                 timer: 1500,
                 showConfirmButton: false
             });
-
-            
-            displayActivities();
-        }
-    });
+            displayActivities();         }
+    }
 }
+
+window.onload = displayActivities;
+
 
 
 function printJournal() {
-    const activities = JSON.parse(localStorage.getItem('activities')) || []; 
-    let printContent = '<thead><tr><th>Tanggal</th><th>Aktivitas</th><th>Detail Aktivitas</th><th>Waktu Efektif (Menit)</th><th>Waktu Mulai</th><th>Waktu Akhir</th><th>Volume</th><th>Jumlah (Menit)</th></tr></thead><tbody>';
+    const tableBody = document.getElementById('tabelKinerja'); 
+        if (!tableBody) {
+        console.error("Table body not found!");
+        return;     }
 
-    
-    activities.forEach(activity => {
-        printContent += `<tr>
-            <td>${activity.tanggal}</td>
-            <td>${activity.aktivitas}</td>
-            <td>${activity.detailAktivitas}</td>
-            <td>${activity.waktuEfektif}</td>
-            <td>${activity.waktuMulai}</td>
-            <td>${activity.waktuAkhir}</td>
-            <td>${activity.volume}</td>
-            <td>${activity.jumlah}</td>
-        </tr>`;
-    });
+    const rows = tableBody.getElementsByTagName('tr');
+    let printContent = `
+        <thead>
+            <tr>
+                <th>Tanggal</th>
+                <th>Aktivitas</th>
+                <th>Detail Aktivitas</th>
+                <th>Waktu Efektif (Menit)</th>
+                <th>Waktu Mulai</th>
+                <th>Waktu Akhir</th>
+                <th>Volume</th>
+                <th>Jumlah (Menit)</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+
+    if (rows.length === 0) {
+        printContent += '<tr><td colspan="8" class="text-center">Tidak ada data untuk dicetak.</td></tr>'; 
+    } else {
+        for (let row of rows) {
+            const cells = row.getElementsByTagName('td');
+            printContent += '<tr>';
+            
+                        if (cells.length >= 7) { 
+                printContent += `<td>${cells[0].innerText}</td>`; 
+                printContent += `<td>${cells[1].innerText}</td>`; 
+                printContent += `<td>${cells[2].innerText}</td>`; 
+                printContent += `<td>${cells[3].innerText}</td>`; 
+                printContent += `<td>${cells[5].innerText}</td>`; 
+                printContent += `<td>${cells[6].innerText}</td>`; 
+                printContent += `<td>${cells[7].innerText}</td>`; 
+                            }
+            
+            printContent += '</tr>';
+        }
+    }
 
     printContent += '</tbody>';
 
-    const newWindow = window.open('', '_blank', 'width=600,height=400'); 
+    const newWindow = window.open('', '_blank', 'width=800,height=600'); 
     newWindow.document.write(`
         <html>
             <head>
-            <title>Laporan Aktivitas Harian Pegawai</title>
+                <title>Laporan Aktivitas Harian Pegawai</title>
                 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <style>
+               <style>
+    body {
+        font-family: 'Ubuntu', sans-serif;
+        color: #333;
+        margin: 40px;
+    }
+    h2 {
+        text-align: center;
+        color: #4a4a4a;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+    th {
+        background-color: #2c3e50; /* Biru tua */
+        color: #000000; /* Warna teks hitam agar kontras */
+        font-weight: bold;
+    }
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+    @media print {
         body {
-            font-family: 'Ubuntu', sans-serif;
-            color: #333;
-            margin: 40px;
-        }
-        h2 {
-            text-align: center;
-            color: #4a4a4a;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border: 1px solid #ddd;
+            margin: 0;
+            padding: 0;
         }
         th {
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: #ffffff; /* Jika latar belakang tidak muncul, tetap terlihat putih */
+            color: #000000; /* Teks hitam untuk cetakan */
             font-weight: bold;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+        table {
+            page-break-inside: avoid;
         }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-            }
-            table {
-                page-break-inside: avoid;
-            }
-        }
-    </style>
-</head>
-<body>
-    <h2>Laporan Aktivitas Harian Pegawai</h2>
-    <table class="table table-bordered text-center table-striped">
-        ${printContent}
-    </table>
-    <script>
-        window.print(); 
-        window.onafterprint = function() {
-            window.close(); 
-        };
-    </script>
-</body>
-</html>
+    }
+</style>
+
+            </head>
+            <body>
+                <h2>Laporan Aktivitas Harian Pegawai</h2>
+                <table class="table table-bordered text-center table-striped">
+                    ${printContent}
+                </table>
+                <script>
+                    window.print(); 
+                    window.onafterprint = function() {
+                        window.close(); 
+                    };
+                </script>
+            </body>
+        </html>
     `);
     newWindow.document.close(); 
 }
-
-
 window.onload = displayActivities; 
 document.addEventListener("contextmenu", function(event) {
     event.preventDefault();
