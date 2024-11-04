@@ -1,4 +1,6 @@
+
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysW2Yvml3yzx3GblS0XQE92klUodnoyeK3fQD6714wf48vJpB7whi1XIxDNeN_U27g/exec"; 
+
 function openModal() {
     $('#inputModal').modal('show');
     $('#inputForm')[0].reset(); 
@@ -19,9 +21,7 @@ async function submitForm() {
         Swal.fire({
             icon: 'warning',
             title: 'Waduh...',
-            
- 
-text: 'Harap lengkapi semua isianya sebelum klik simpan.',
+            text: 'Harap lengkapi semua isianya sebelum klik simpan.',
         });
         return; 
     }
@@ -117,8 +117,10 @@ async function addActivity(activity) {
         await displayActivities();
 }
 
+
 async function deleteActivity(index) {
-        const result = await Swal.fire({
+    
+    const result = await Swal.fire({
         title: 'Yakin nih mau dihapus?',
         text: "Aktivitas ini akan dihapus dan tidak dapat dikembalikan!",
         icon: 'warning',
@@ -129,7 +131,8 @@ async function deleteActivity(index) {
         cancelButtonText: 'Sebentar'
     });
 
-        if (result.isConfirmed) {
+    
+    if (result.isConfirmed) {
         const response = await fetch(SCRIPT_URL + "?action=deleteData&rowIndex=" + index, {
             method: "POST"
         });
@@ -143,9 +146,11 @@ async function deleteActivity(index) {
                 timer: 1500,
                 showConfirmButton: false
             });
-            displayActivities();         }
+            displayActivities(); 
+        }
     }
 }
+
 
 window.onload = displayActivities;
 
@@ -153,9 +158,12 @@ window.onload = displayActivities;
 
 function printJournal() {
     const tableBody = document.getElementById('tabelKinerja'); 
-        if (!tableBody) {
+
+    
+    if (!tableBody) {
         console.error("Table body not found!");
-        return;     }
+        return; 
+    }
 
     const rows = tableBody.getElementsByTagName('tr');
     let printContent = `
@@ -164,7 +172,7 @@ function printJournal() {
                 <th>Tanggal</th>
                 <th>Aktivitas</th>
                 <th>Detail Aktivitas</th>
-                <th>Waktu Efektif (Menit)</th>
+                <th>Waktu Efektif (Menit)</th> <!-- Menampilkan kolom Waktu Efektif -->
                 <th>Waktu Mulai</th>
                 <th>Waktu Akhir</th>
                 <th>Volume</th>
@@ -181,15 +189,18 @@ function printJournal() {
             const cells = row.getElementsByTagName('td');
             printContent += '<tr>';
             
-                        if (cells.length >= 7) { 
+            
+            if (cells.length >= 7) { 
                 printContent += `<td>${cells[0].innerText}</td>`; 
                 printContent += `<td>${cells[1].innerText}</td>`; 
                 printContent += `<td>${cells[2].innerText}</td>`; 
                 printContent += `<td>${cells[3].innerText}</td>`; 
+                printContent += `<td>${cells[4].innerText}</td>`; 
                 printContent += `<td>${cells[5].innerText}</td>`; 
                 printContent += `<td>${cells[6].innerText}</td>`; 
                 printContent += `<td>${cells[7].innerText}</td>`; 
-                            }
+                // Kolom hapus diabaikan
+            }
             
             printContent += '</tr>';
         }
