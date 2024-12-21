@@ -49,7 +49,7 @@ async function submitForm() {
     if (result.status === "success") {
         Swal.fire({
             icon: 'success',
-            title: 'Yeayy..berhasil!',
+            title: 'Mantap bro. aktivitas harian berhasil disimpan!',
             text: result.message,
             timer: 1500,
             showConfirmButton: false
