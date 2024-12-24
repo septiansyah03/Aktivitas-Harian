@@ -13,7 +13,7 @@
 <body style="font-family: 'Ubuntu', sans-serif;">
 
 <div class="container mt-4">
-  <h3 class="text-center">Catatan Aktivitas Harian Pegawai</h3>
+  <h3 class="text-center">AKTIVITAS HARIAN PEGAWAI</h3>
   <button class="btn btn-primary mb-3" onclick="openModal()">
     <i class="fa fa-plus"></i> Aktivitas Harian
   </button>
@@ -41,8 +41,11 @@
     <button class="btn btn-success" onclick="printJournal()">
       <i class="fa fa-print"></i> Aktivitas Harian
     </button>
+    <button class="btn btn-light" onclick="downloadExcel()">
+      <i class="fa fa-file-excel"></i> Aktivitas Harian
+  </button>
 
-    <div class="text-center" style="color: #00ff00; font-weight: bold;">
+    <div class="text-center" style="color: #a5effc; font-weight: bold;">
       <marquee behavior="scroll" direction="left">Sistem pencatatan aktivitas harian pegawai dalam pengelolaan kinerja.</marquee>
     </div>
   </div>
@@ -137,6 +140,7 @@
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="assets/kinerja.js"></script>
   <script>
     window.onload = function() {
