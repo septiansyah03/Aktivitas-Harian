@@ -154,7 +154,87 @@ async function deleteActivity(index) {
 
 window.onload = displayActivities;
 
+function downloadExcel() {
+    const tableBody = document.getElementById('tabelKinerja');
+    if (!tableBody) {
+        console.error("Table body not found!");
+        return;
+    }
 
+    const rows = tableBody.getElementsByTagName('tr');
+    const data = [];
+
+    // Menambahkan judul di atas header
+    const title = ["Laporan Aktivitas Harian Pegawai"]; // Judul
+    data.push(title);
+    data.push([]); // Memberikan jarak kosong setelah judul
+
+    // Header Excel
+    const headers = ["Tanggal", "Aktivitas", "Detail Aktivitas", "Waktu Efektif (Menit)", "Waktu Mulai", "Waktu Akhir", "Volume", "Jumlah (Menit)"];
+    data.push(headers);
+
+    // Data dari tabel
+    if (rows.length === 0) {
+        console.warn("Tidak ada data untuk diekspor.");
+        alert("Tidak ada data untuk diekspor.");
+        return;
+    } else {
+        for (let row of rows) {
+            const cells = row.getElementsByTagName('td');
+            if (cells.length >= 8) { // Pastikan ada 8 kolom
+                data.push([
+                    cells[0].innerText || "",
+                    cells[1].innerText || "",
+                    cells[2].innerText || "",
+                    cells[3].innerText || "",
+                    cells[4].innerText || "",
+                    cells[5].innerText || "",
+                    cells[6].innerText || "",
+                    cells[7].innerText || ""
+                ]);
+            }
+        }
+    }
+
+    // Membuat worksheet dan menambahkan data
+    const ws = XLSX.utils.aoa_to_sheet(data);
+
+    // Mengatur lebar kolom
+    const columnWidths = [
+        { wch: 25 }, // Tanggal
+        { wch: 30 }, // Aktivitas
+        { wch: 35 }, // Detail Aktivitas
+        { wch: 20 }, // Waktu Efektif
+        { wch: 15 }, // Waktu Mulai
+        { wch: 15 }, // Waktu Akhir
+        { wch: 10 }, // Volume
+        { wch: 15 }  // Jumlah (Menit)
+    ];
+    ws['!cols'] = columnWidths;
+
+    // Menambahkan border pada seluruh sel
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let row = range.s.r; row <= range.e.r; row++) {
+        for (let col = range.s.c; col <= range.e.c; col++) {
+            const cellAddress = XLSX.utils.encode_cell({ r: row, c: col });
+            if (!ws[cellAddress]) continue;
+            ws[cellAddress].s = {
+                border: {
+                    top: { style: "thin", color: { rgb: "000000" } },
+                    bottom: { style: "thin", color: { rgb: "000000" } },
+                    left: { style: "thin", color: { rgb: "000000" } },
+                    right: { style: "thin", color: { rgb: "000000" } },
+                },
+                alignment: { vertical: "center", horizontal: "center" }
+            };
+        }
+    }
+
+    // Membuat workbook dan menyimpan file
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Aktivitas Harian");
+    XLSX.writeFile(wb, "Laporan_Aktivitas_Harian.xlsx");
+}
 
 function printJournal() {
     const tableBody = document.getElementById('tabelKinerja'); 
