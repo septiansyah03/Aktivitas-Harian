@@ -397,3 +397,8 @@ function printJournal() {
             $('#aktivitas').val('').trigger('change.select2');
         });
     });
+
+    window.onload = displayActivities; 
+    document.addEventListener("contextmenu", function(event) {
+    event.preventDefault();
+    });
