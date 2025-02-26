@@ -1,4 +1,3 @@
-
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysW2Yvml3yzx3GblS0XQE92klUodnoyeK3fQD6714wf48vJpB7whi1XIxDNeN_U27g/exec"; 
 
 function openModal() {
@@ -49,7 +48,7 @@ async function submitForm() {
     if (result.status === "success") {
         Swal.fire({
             icon: 'success',
-            title: 'Mantap bro. aktivitas harian berhasil disimpan!',
+            title: 'Mantap bro. Aktivitas harian berhasil disimpan!',
             text: result.message,
             timer: 1500,
             showConfirmButton: false
@@ -167,10 +166,10 @@ function downloadExcel() {
     const rows = tableBody.getElementsByTagName('tr');
     const data = [];
 
-    // Menambahkan judul di atas header
+    
     const title = ["Laporan Aktivitas Harian Pegawai"]; // Judul
     data.push(title);
-    data.push([]); // Memberikan jarak kosong setelah judul
+    data.push([]); 
 
     // Header Excel
     const headers = ["Tanggal", "Aktivitas", "Detail Aktivitas", "Waktu Efektif (Menit)", "Waktu Mulai", "Waktu Akhir", "Volume", "Jumlah (Menit)"];
@@ -364,8 +363,37 @@ function printJournal() {
     `);
     newWindow.document.close(); 
 }
-window.onload = displayActivities; 
-document.addEventListener("contextmenu", function(event) {
-    event.preventDefault();
-});
 
+    $(document).ready(function() {
+      
+      $('.select2').select2({
+        placeholder: "--Pilih Aktivitas--",
+        allowClear: true
+      });
+    });
+  
+    function openModal() {
+      $('#inputModal').modal('show');
+    }
+ 
+    $(document).ready(function() {
+        $('#inputForm').submit(function(e) {
+            alert("Form berhasil dikirim!");
+
+            this.reset();
+
+            $('#aktivitas').val('').trigger('change.select2');
+        });
+
+        $('#aktivitas').select2({
+            width: '100%',
+            placeholder: '--Pilih Aktivitas--',
+            allowClear: true,
+            dropdownParent: $('#inputModal')
+          });
+          
+        $('#inputModal').on('hidden.bs.modal', function () {
+            $('#inputForm')[0].reset();
+            $('#aktivitas').val('').trigger('change.select2');
+        });
+    });
