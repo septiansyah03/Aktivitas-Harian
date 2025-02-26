@@ -8,102 +8,103 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"> <!-- Select2 CSS -->
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body style="font-family: 'Ubuntu', sans-serif;">
 
-<div class="container mt-4">
-  <h3 class="text-center">AKTIVITAS HARIAN PEGAWAI</h3>
-  <button class="btn btn-primary mb-3" onclick="openModal()">
-    <i class="fa fa-plus"></i> Aktivitas Harian
-  </button>
-
-  <div class="table-responsive">
-    <table class="table table-bordered text-center table-striped fade-in" id="kinerjaTable">
-      <thead class="thead-dark">
-        <tr>
-          <th>Tanggal</th>
-          <th>Aktivitas</th>
-          <th>Detail Aktivitas</th>
-          <th>Waktu Efektif (Menit)</th>
-          <th>Waktu Mulai</th>
-          <th>Waktu Akhir</th>
-          <th>Volume</th>
-          <th>Jumlah (Menit)</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody id="tabelKinerja">
-        <!-- Data aktivitas akan dimasukkan di sini -->
-      </tbody>
-    </table>
-    <!-- Tambahin teks info jumlah data di sini -->
-    <p id="showingInfo" class="mt-2 text-muted"></p>
-</div>
-
-
-    <button class="btn btn-success" onclick="printJournal()">
-      <i class="fa fa-print"></i> Aktivitas Harian
+  <div class="container mt-4">
+    <h3 class="text-center">AKTIVITAS HARIAN PEGAWAI</h3>
+    <button class="btn btn-primary mb-3" onclick="openModal()">
+      <i class="fa fa-plus"></i> Aktivitas Harian
     </button>
-    <button class="btn btn-light" onclick="downloadExcel()">
-      <i class="fa fa-file-excel"></i> Aktivitas Harian
-  </button>
-
-    <div class="text-center" style="color: #a5effc; font-weight: bold;">
-      <marquee behavior="scroll" direction="left">Sistem pencatatan aktivitas harian pegawai dalam pengelolaan kinerja.</marquee>
-    </div>
+  
+    <div class="table-responsive">
+      <table class="table table-bordered text-center table-striped fade-in" id="kinerjaTable">
+        <thead class="thead-dark">
+          <tr>
+            <th>Tanggal</th>
+            <th>Aktivitas</th>
+            <th>Detail Aktivitas</th>
+            <th>Waktu Efektif (Menit)</th>
+            <th>Waktu Mulai</th>
+            <th>Waktu Akhir</th>
+            <th>Volume</th>
+            <th>Jumlah (Menit)</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tabelKinerja">
+          <!-- Data aktivitas akan dimasukkan di sini -->
+        </tbody>
+      </table>
+      <!-- Tambahin teks info jumlah data di sini -->
+      <p id="showingInfo" class="mt-2 text-muted"></p>
   </div>
-
-  <div class="modal fade" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="inputModalLabel">
-              <i class="fa fa-tasks"></i> Input Aktivitas Harian
-          </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form id="inputForm">
-            <div class="form-group">
-              <label for="tanggal">Tanggal:</label>
-              <input type="date" id="tanggal" class="form-control" required>
-            </div>
-            <div class="form-group">
-              <label for="aktivitas">Aktivitas:</label>
-              <select id="aktivitas" class="form-control" required>
-              <option value="" disabled selected>--Pilih Aktivitas--</option>
-              <option value="Membuat program kerja sesuai dengan bidang tugasnya (30)">Membuat program kerja sesuai dengan bidang tugasnya (30)</option>
-              <option value="Mengisi buku induk peserta didik (15)">Mengisi buku induk peserta didik (15)</option>
-              <option value="Melaksanakan tugas administrasi PPDB (60)">Melaksanakan tugas administrasi PPDB (60)</option>
-              <option value="Melaksanakan tugas administrasi Ujian (UTS, UAS, UKK, US, UN, US/MBD) (60)">Melaksanakan tugas administrasi Ujian (UTS, UAS, UKK, US, UN, US/MBD) (60)</option>
-              <option value="Merekap kehadiran peserta didik (30)">Merekap kehadiran peserta didik (30)</option>
-              <option value="Merekap dan melaporkan kehadiran Guru/Pegawai secara online/offline (30)">Merekap dan melaporkan kehadiran Guru/Pegawai secara online/offline (30)</option>
-              <option value="Mengelola dan melaporkan Dapodik (60)">Mengelola dan melaporkan Dapodik (60)</option>
-              <option value="Mengagendakan/mengarsipkan surat masuk dan keluar (60)">Mengagendakan/mengarsipkan surat masuk dan keluar (60)</option>
-              <option value="Membuat laporan ke dinas terkait (60)">Membuat laporan ke dinas terkait (60)</option>
-              <option value="Mengetik konsep surat, menggandakan, dan mendistribusikan surat (30)">Mengetik konsep surat, menggandakan, dan mendistribusikan surat (30)</option>
-              <option value="Melaksanakan tugas kedinasan yang diperintahkan oleh pimpinan (60,90)">Melaksanakan tugas kedinasan yang diperintahkan oleh pimpinan (60,90)</option>
-              <option value="Mengikuti kegiatan sosialiasi/bimbingan teknis (120,240)">Mengikuti kegiatan sosialiasi/bimbingan teknis (120,240)</option>
-              <option value="Mengolah dan menyajikan data (60)">Mengolah dan menyajikan data (60)</option>
-              <option value="Mengikuti rapat koordinasi dengan atasan (60,120)">Mengikuti rapat koordinasi dengan atasan (60,120)</option>
-              <option value="Membuat buku peminjaman dan pengembalian barang inventaris (60)">Membuat buku peminjaman dan pengembalian barang inventaris (60)</option>
-              <option value="Melaksanakan persuratan dan kearsipan dokumen kepegawaian (30)">Melaksanakan persuratan dan kearsipan dokumen kepegawaian (30)</option>
-              <option value="Melakukan pemeliharaan komputer/server (120)">Melakukan pemeliharaan komputer/server (120)</option>
-              <option value="Melayani tamu sesuai dengan SOP (30)">Melayani tamu sesuai dengan SOP (30)</option>
-              <option value="Membuat form SKP (120)">Membuat form SKP (120)</option>
-              <option value="Melakukan pemeliharaan jaringan IT (120)">Melakukan pemeliharaan jaringan IT (120)</option>
-              <option value="Membuat administrasi persuratan peserta didik (30)">Membuat administrasi persuratan peserta didik (30)</option>
-              <option value="Membuat data statistik peserta didik setiap bulan (30)">Membuat data statistik peserta didik setiap bulan (30)</option>
-              <option value="Mengagendakan buku administrasi mutasi peserta didik masuk dan keluar (15)">Mengagendakan buku administrasi mutasi peserta didik masuk dan keluar (15)</option>
-              <option value="Mendesign sertifikat, brosur, cover dll (60)">Mendesign sertifikat, brosur, cover dll (60)</option>
-              <option value="Melakukan penginputan data ke dalam aplikasi (15)">Melakukan penginputan data ke dalam aplikasi (15)</option>
-              <option value="Mendokumentasikan nilai-nilai US/US/MBD, UN dan Ledger (15)">Mendokumentasikan nilai-nilai US/US/MBD, UN dan Ledger (15)</option>
-              <option value="Mengurus KJP, BSM dan Beasiswa peserta didik sesuai petunjuk teknis (60)">Mengurus KJP, BSM dan Beasiswa peserta didik sesuai petunjuk teknis (60)</option>
-              </select>
-            </div>
+  
+  
+      <button class="btn btn-success" onclick="printJournal()">
+        <i class="fa fa-print"></i> Aktivitas Harian
+      </button>
+      <button class="btn btn-light" onclick="downloadExcel()">
+        <i class="fa fa-file-excel"></i> Aktivitas Harian
+    </button>
+  
+      <div class="text-center" style="color: #a5effc; font-weight: bold;">
+        <marquee behavior="scroll" direction="left">Sistem pencatatan aktivitas harian pegawai dalam pengelolaan kinerja.</marquee>
+      </div>
+    </div>
+  
+    <div class="modal fade" id="inputModal" tabindex="-1" role="dialog" aria-labelledby="inputModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="inputModalLabel">
+                <i class="fa fa-tasks"></i> Input Aktivitas Harian
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="inputForm">
+              <div class="form-group">
+                <label for="tanggal">Tanggal:</label>
+                <input type="date" id="tanggal" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label for="aktivitas">Aktivitas:</label>
+                <select id="aktivitas" class="form-control select2" required>
+                <option value="" disabled selected>--Pilih Aktivitas--</option>
+                <option value="Membuat program kerja sesuai dengan bidang tugasnya (30)">Membuat program kerja sesuai dengan bidang tugasnya (30)</option>
+                <option value="Mengisi buku induk peserta didik (15)">Mengisi buku induk peserta didik (15)</option>
+                <option value="Melaksanakan tugas administrasi PPDB (60)">Melaksanakan tugas administrasi PPDB (60)</option>
+                <option value="Melaksanakan tugas administrasi Ujian (UTS, UAS, UKK, US, UN, US/MBD) (60)">Melaksanakan tugas administrasi Ujian (UTS, UAS, UKK, US, UN, US/MBD) (60)</option>
+                <option value="Merekap kehadiran peserta didik (30)">Merekap kehadiran peserta didik (30)</option>
+                <option value="Merekap dan melaporkan kehadiran Guru/Pegawai secara online/offline (30)">Merekap dan melaporkan kehadiran Guru/Pegawai secara online/offline (30)</option>
+                <option value="Mengelola dan melaporkan Dapodik (60)">Mengelola dan melaporkan Dapodik (60)</option>
+                <option value="Mengagendakan/mengarsipkan surat masuk dan keluar (60)">Mengagendakan/mengarsipkan surat masuk dan keluar (60)</option>
+                <option value="Membuat laporan ke dinas terkait (60)">Membuat laporan ke dinas terkait (60)</option>
+                <option value="Mengetik konsep surat, menggandakan, dan mendistribusikan surat (30)">Mengetik konsep surat, menggandakan, dan mendistribusikan surat (30)</option>
+                <option value="Melaksanakan tugas kedinasan yang diperintahkan oleh pimpinan (60,90)">Melaksanakan tugas kedinasan yang diperintahkan oleh pimpinan (60,90)</option>
+                <option value="Mengikuti kegiatan sosialiasi/bimbingan teknis (120,240)">Mengikuti kegiatan sosialiasi/bimbingan teknis (120,240)</option>
+                <option value="Mengolah dan menyajikan data (60)">Mengolah dan menyajikan data (60)</option>
+                <option value="Mengikuti rapat koordinasi dengan atasan (60,120)">Mengikuti rapat koordinasi dengan atasan (60,120)</option>
+                <option value="Membuat buku peminjaman dan pengembalian barang inventaris (60)">Membuat buku peminjaman dan pengembalian barang inventaris (60)</option>
+                <option value="Melaksanakan persuratan dan kearsipan dokumen kepegawaian (30)">Melaksanakan persuratan dan kearsipan dokumen kepegawaian (30)</option>
+                <option value="Melakukan pemeliharaan komputer/server (120)">Melakukan pemeliharaan komputer/server (120)</option>
+                <option value="Melayani tamu sesuai dengan SOP (30)">Melayani tamu sesuai dengan SOP (30)</option>
+                <option value="Membuat form SKP (120)">Membuat form SKP (120)</option>
+                <option value="Melakukan pemeliharaan jaringan IT (120)">Melakukan pemeliharaan jaringan IT (120)</option>
+                <option value="Membuat administrasi persuratan peserta didik (30)">Membuat administrasi persuratan peserta didik (30)</option>
+                <option value="Membuat data statistik peserta didik setiap bulan (30)">Membuat data statistik peserta didik setiap bulan (30)</option>
+                <option value="Mengagendakan buku administrasi mutasi peserta didik masuk dan keluar (15)">Mengagendakan buku administrasi mutasi peserta didik masuk dan keluar (15)</option>
+                <option value="Mendesign sertifikat, brosur, cover dll (60)">Mendesign sertifikat, brosur, cover dll (60)</option>
+                <option value="Melakukan penginputan data ke dalam aplikasi (15)">Melakukan penginputan data ke dalam aplikasi (15)</option>
+                <option value="Mendokumentasikan nilai-nilai US/US/MBD, UN dan Ledger (15)">Mendokumentasikan nilai-nilai US/US/MBD, UN dan Ledger (15)</option>
+                <option value="Mengurus KJP, BSM dan Beasiswa peserta didik sesuai petunjuk teknis (60)">Mengurus KJP, BSM dan Beasiswa peserta didik sesuai petunjuk teknis (60)</option>
+                </select>
+              </div>
             <div class="form-group">
               <label for="detailAktivitas">Detail Aktivitas:</label>
               <input type="text" id="detailAktivitas" class="form-control" required>
@@ -149,6 +150,9 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="assets/kinerja.js"></script>
   <script>
     window.onload = function() {
@@ -157,5 +161,6 @@
       displayActivities(); 
     };
   </script>
+    
 </body>
 </html>
