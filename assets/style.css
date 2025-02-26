@@ -204,3 +204,18 @@ input.form-control:focus {
         display: block;
     }
 }
+
+.select2-results__option {
+    color:#4A4A4A !important; 
+  }
+  
+  .select2-results__option--highlighted {
+    color: white !important;
+    background-color: #0056b3; 
+  }
+  
+  
+  .select2-selection__rendered {
+    color: #4A4A4A !important; 
+  }
+  
