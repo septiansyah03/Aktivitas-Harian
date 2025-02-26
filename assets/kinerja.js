@@ -96,6 +96,9 @@ async function displayActivities() {
             <td>${totalWaktuEfektif} menit</td>
         </tr>`;
         tabelKinerja.insertAdjacentHTML('beforeend', totalRow);
+        const showingInfo = document.getElementById("showingInfo");
+showingInfo.innerText = `Menampilkan ${activities.length} dari ${activities.length} data`;
+
     }
 }
 
@@ -365,3 +368,4 @@ window.onload = displayActivities;
 document.addEventListener("contextmenu", function(event) {
     event.preventDefault();
 });
+
