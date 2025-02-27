@@ -167,15 +167,15 @@ function downloadExcel() {
     const data = [];
 
     
-    const title = ["Laporan Aktivitas Harian Pegawai"]; // Judul
+    const title = ["Laporan Aktivitas Harian Pegawai"]; 
     data.push(title);
     data.push([]); 
 
-    // Header Excel
+    
     const headers = ["Tanggal", "Aktivitas", "Detail Aktivitas", "Waktu Efektif (Menit)", "Waktu Mulai", "Waktu Akhir", "Volume", "Jumlah (Menit)"];
     data.push(headers);
 
-    // Data dari tabel
+    
     if (rows.length === 0) {
         console.warn("Tidak ada data untuk diekspor.");
         alert("Tidak ada data untuk diekspor.");
@@ -380,6 +380,7 @@ function printJournal() {
         $('#inputForm').submit(function(e) {
             alert("Form berhasil dikirim!");
 
+            
             this.reset();
 
             $('#aktivitas').val('').trigger('change.select2');
@@ -399,6 +400,180 @@ function printJournal() {
     });
 
     window.onload = displayActivities; 
-    document.addEventListener("contextmenu", function(event) {
+document.addEventListener("contextmenu", function(event) {
     event.preventDefault();
+});
+
+function toggleArsipForm() {
+    var form = document.getElementById("arsipForm");
+    form.style.display = form.style.display === "none" ? "block" : "none";
+}
+
+function formatTanggal(tanggalString) {
+    if (!tanggalString) return "-"; 
+
+    let date = new Date(tanggalString);
+    let day = date.getDate().toString().padStart(2, '0'); 
+    let month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+    let year = date.getFullYear(); 
+
+    return `${day}/${month}/${year}`; 
+}
+
+
+function formatWaktu(waktuString) {
+    if (!waktuString) return "-"; // Jika kosong, tampilkan "-"
+
+    // Jika dalam format ISO (contoh: "2024-12-23T17:00:00.000Z")
+    if (waktuString.includes("T")) {
+        let date = new Date(waktuString);
+        let jam = date.getHours().toString().padStart(2, '0');
+        let menit = date.getMinutes().toString().padStart(2, '0');
+        return `${jam}:${menit}`; // Contoh: 07:30
+    }
+
+    // Jika dalam format Excel Serial Number (contoh: 0.5 untuk 12:00)
+    let excelEpoch = new Date(1899, 11, 30); // Excel mulai dari 30 Des 1899
+    let waktu = new Date(excelEpoch.getTime() + (parseFloat(waktuString) * 86400000));
+
+    let jam = waktu.getHours().toString().padStart(2, '0');
+    let menit = waktu.getMinutes().toString().padStart(2, '0');
+
+    return `${jam}:${menit}`;
+}
+
+
+function getFilteredArsip() {
+    var startDate = document.getElementById("startDate").value;
+    var endDate = document.getElementById("endDate").value;
+
+    fetch(`https://script.google.com/macros/s/AKfycbysW2Yvml3yzx3GblS0XQE92klUodnoyeK3fQD6714wf48vJpB7whi1XIxDNeN_U27g/exec?action=getFilteredArsip&start=${startDate}&end=${endDate}`)
+        .then(response => response.json())
+        .then(data => {
+            var tbody = document.querySelector("#arsipTable tbody");
+            var showingInfo = document.getElementById("showingInfoArsip");
+            tbody.innerHTML = ""; // Hapus isi tabel sebelumnya
+
+            if (data.length > 1) {
+                data.slice(1).forEach(row => {
+                    var tr = document.createElement("tr");
+
+                    let tanggal = formatTanggal(row[0]); // Ubah tanggal jadi format dd/mm/yyyy
+                    let aktivitas = row[1];
+                    let detail = row[2];
+                    let efektif = row[3];
+                    let mulai = formatWaktu(row[4]); // Ubah waktu mulai
+                    let akhir = formatWaktu(row[5]); // Ubah waktu akhir
+                    let volume = row[6];
+                    let jumlah = row[7];
+
+                    tr.innerHTML = `
+                        <td>${tanggal}</td>
+                        <td>${aktivitas}</td>
+                        <td>${detail}</td>
+                        <td>${efektif}</td>
+                        <td>${mulai}</td>
+                        <td>${akhir}</td>
+                        <td>${volume}</td>
+                        <td>${jumlah}</td>
+                    `;
+
+                    tbody.appendChild(tr);
+                });
+
+                // Update jumlah arsip yang ditampilkan
+                showingInfo.textContent = `Menampilkan ${data.length - 1} arsip kinerja dari ${startDate} hingga ${endDate}`;
+            } else {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada riwayat arsip kinerja pada rentang tanggal tersebut</td></tr>`;
+                showingInfo.textContent = "Tidak ada arsip kinerja yang ditemukan pada rentang tanggal tersebut.";
+            }
+
+            // Tampilkan modal setelah data dimuat
+            var modal = new bootstrap.Modal(document.getElementById('arsipModal'));
+            modal.show();
+        });
+}
+
+document.getElementById("downloadExcel").addEventListener("click", function () {
+    var table = document.getElementById("arsipTable"); // Ambil tabel arsip
+    var wb = XLSX.utils.book_new(); // Buat workbook baru
+    var ws = XLSX.utils.table_to_sheet(table); // Konversi tabel ke sheet
+
+    XLSX.utils.book_append_sheet(wb, ws, "Arsip Kinerja"); // Tambahkan sheet ke workbook
+    XLSX.writeFile(wb, "Arsip_Kinerja.xlsx"); // Simpan file dengan nama Arsip_Kinerja.xlsx
+});
+document.addEventListener("DOMContentLoaded", function () {
+    var backToTopMain = document.getElementById("backToTopMain");
+    var backToTopModal = document.getElementById("backToTopModal");
+    var modal = document.getElementById("arsipModal");
+    var modalBody = modal.querySelector(".modal-body"); // Pastikan ambil modal-body yang benar
+
+    // Cek apakah sudah di bagian bawah halaman utama
+    function checkScrollMain() {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+            backToTopMain.style.display = "block";
+        } else {
+            backToTopMain.style.display = "none";
+        }
+    }
+
+    // Cek apakah sudah di bagian bawah modal arsip
+    function checkScrollModal() {
+        if (modalBody.scrollHeight - modalBody.scrollTop <= modalBody.clientHeight + 10) {
+            backToTopModal.style.display = "block";
+        } else {
+            backToTopModal.style.display = "none";
+        }
+    }
+
+    // Event listener untuk scroll halaman utama
+    window.addEventListener("scroll", checkScrollMain);
+
+    // Event listener untuk scroll modal, tapi hanya kalau modalnya sudah terbuka
+    modal.addEventListener("shown.bs.modal", function () {
+        modalBody.addEventListener("scroll", checkScrollModal);
     });
+
+    // Event listener untuk menyembunyikan tombol saat modal ditutup
+    modal.addEventListener("hidden.bs.modal", function () {
+        backToTopModal.style.display = "none";
+    });
+
+    // Scroll ke atas untuk halaman utama
+    backToTopMain.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // Scroll ke atas untuk modal arsip
+    backToTopModal.addEventListener("click", function () {
+        modalBody.scrollTo({ top: 0, behavior: "smooth" });
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    var backToTopModal = document.getElementById("backToTopModal");
+    var modal = document.getElementById("arsipModal");
+    var modalBody = document.getElementById("modalScrollContainer"); 
+
+    function checkScrollModal() {
+        if (modalBody.scrollTop + modalBody.clientHeight >= modalBody.scrollHeight - 10) {
+            backToTopModal.style.display = "block"; 
+        } else {
+            backToTopModal.style.display = "none"; 
+        }
+    }
+
+    
+    modal.addEventListener("shown.bs.modal", function () {
+        modalBody.addEventListener("scroll", checkScrollModal);
+    });
+
+    
+    modal.addEventListener("hidden.bs.modal", function () {
+        backToTopModal.style.display = "none"; 
+    });
+
+    
+    backToTopModal.addEventListener("click", function () {
+        modalBody.scrollTo({ top: 0, behavior: "smooth" });
+    });
+});
