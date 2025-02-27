@@ -15,13 +15,83 @@
 
   <div class="container mt-4">
     <h3 class="text-center">AKTIVITAS HARIAN PEGAWAI</h3>
+
+    <!-- Tombol Aktivitas Harian -->
     <button class="btn btn-primary mb-3" onclick="openModal()">
-      <i class="fa fa-plus"></i> Aktivitas Harian
+        <i class="fa fa-plus"></i> Aktivitas Harian
     </button>
-  
+
+    <!-- Tombol utama untuk membuka form arsip -->
+    <button class="btn btn-secondary mb-3" onclick="toggleArsipForm()">
+        <i class="fa fa-folder-open"></i> Arsip Aktivitas
+    </button>
+
+    <!-- Form filter arsip (Awalnya disembunyikan) -->
+    <div id="arsipForm" style="display: none; margin-top: 10px;">
+        <label for="startDate">Dari:</label>
+        <input type="date" id="startDate">
+
+        <label for="endDate">Sampai:</label>
+        <input type="date" id="endDate">
+
+        <!-- Tombol untuk membuka modal -->
+        <button class="btn btn-primary" onclick="getFilteredArsip()">Riwayat Arsip</button>
+        
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="arsipModal" tabindex="-1" aria-labelledby="arsipModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="arsipModalLabel">Arsip Kinerja</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <button id="downloadExcel" class="btn btn-success mb-2">
+                  <i class="fa fa-file-excel"></i> Unduh Arsip Kinerja
+              </button>
+              
+              <div style="max-height: 400px; overflow-y: auto;" id="modalScrollContainer">
+                <table id="arsipTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Aktivitas</th>
+                            <th>Detail Aktivitas</th>
+                            <th>Waktu Efektif</th>
+                            <th>Waktu Mulai</th>
+                            <th>Waktu Akhir</th>
+                            <th>Volume</th>
+                            <th>Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="8" class="text-center">Pilih tanggal dan klik "Lihat Arsip"</td></tr>
+                    </tbody>
+                </table>
+              </div>
+              <!-- Tombol Back to Top Khusus Modal -->
+            <button id="backToTopModal" class="btn btn-primary" title="Otw" 
+            style="display: flex; position: fixed; bottom: 20px; right: 20px; z-index: 1050;">
+            <i class="fa fa-angle-double-up"></i>
+            </button>
+              
+              <!-- Informasi jumlah data -->
+              <p id="showingInfoArsip" class="mt-2 text-muted text-center">Menampilkan 0 arsip</p>
+          </div>
+
+      </div>
+  </div>
+</div>
+
+
     <div class="table-responsive">
       <table class="table table-bordered text-center table-striped fade-in" id="kinerjaTable">
-        <thead class="thead-dark">
+        <thead class="bg-primary text-white">
           <tr>
             <th>Tanggal</th>
             <th>Aktivitas</th>
@@ -38,6 +108,11 @@
           <!-- Data aktivitas akan dimasukkan di sini -->
         </tbody>
       </table>
+      <!-- Tombol Back to Top untuk Halaman Utama -->
+<button id="backToTopMain" class="btn btn-primary" title="Otw" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000;">
+  <i class="fa fa-angle-double-up"></i>
+</button>
+
       <!-- Tambahin teks info jumlah data di sini -->
       <p id="showingInfo" class="mt-2 text-muted"></p>
   </div>
