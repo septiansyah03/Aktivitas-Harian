@@ -161,6 +161,8 @@ input.form-control:focus {
     }
     .table thead {
         display: none;
+        text-align: center;
+        vertical-align: middle;
     }
     .table tr {
         display: block;
@@ -170,10 +172,11 @@ input.form-control:focus {
         padding: 10px;
         background: rgba(28, 28, 28, 0.8);
         position: relative;
+        
     }
     .table td {
         display: block;
-        text-align: left;
+        text-align: center;
         font-size: 0.9em;
         padding: 10px;
         border-bottom: 1px solid #555;
@@ -218,4 +221,49 @@ input.form-control:focus {
   .select2-selection__rendered {
     color: #4A4A4A !important; 
   }
+  .modal-body {
+    overflow-x:auto;
+    max-height: 90vh; /* Supaya modal tidak terlalu panjang */
+}
+@media (min-width: 992px) { 
+    .container {
+        max-width: 90%; /* Perkecil lebar */
+    }
+    .table th, .table td {
+        padding: 8px; /* Kurangi padding */
+        font-size: 0.9em; /* Perkecil font */
+    }
+    .btn {
+        padding: 8px 12px; /* Perkecil tombol */
+        font-size: 0.85em;
+    }
+}
+#backToTop {
+    display: none; /* Awalnya tersembunyi */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Gradasi warna */
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+}
+
+#backToTop:hover {
+    background: linear-gradient(135deg, #0056b3, #004090); /* Warna lebih gelap saat hover */
+    transform: scale(1.1); /* Efek memperbesar */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.35);
+}
+
   
