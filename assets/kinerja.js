@@ -581,13 +581,17 @@ document.addEventListener("DOMContentLoaded", function () {
 function login() {
     let username = document.getElementById('username').value;
     let password = document.getElementById('password').value;
-
+  
     // Check if username and password are correct
-    if (username === "adminkinerja" && password === "kinerja@dmin") {
+    if (username === "adminkinerja" && password === "Kinerja@dmin") {
+      // Save login status to localStorage
+      localStorage.setItem('loggedIn', 'true');
+      console.log("Login successful, saved to localStorage");
+  
       // Hide the login form and show the content
       document.getElementById("loginContainer").style.display = "none";
       document.getElementById("contentContainer").style.display = "block";
-
+  
       // Show SweetAlert success message for successful login
       Swal.fire({
         title: 'Login Berhasil!',
@@ -605,13 +609,17 @@ function login() {
       });
     }
   }
-
+  
   // Function to handle logout
   function logout() {
+    // Remove login status from localStorage
+    localStorage.removeItem('loggedIn');
+    console.log("Logged out, removed from localStorage");
+  
     // Hide the content and show the login form
     document.getElementById("loginContainer").style.display = "block";
     document.getElementById("contentContainer").style.display = "none";
-
+  
     // Show SweetAlert success message for logout
     Swal.fire({
       title: 'Logout Berhasil!',
@@ -620,6 +628,25 @@ function login() {
       confirmButtonText: 'OK'
     });
   }
+  
+  // Check login status when the page loads
+  window.onload = function() {
+    console.log("Page loaded. Checking login status...");
+  
+    // Ensure the login form is visible and content is hidden by default
+    document.getElementById("loginContainer").style.display = "block";
+    document.getElementById("contentContainer").style.display = "none";
+  
+    // Check if the user is already logged in by looking at localStorage
+    if (localStorage.getItem('loggedIn') === 'true') {
+      console.log("User is logged in, showing content.");
+      // If logged in, hide the login form and show the content
+      document.getElementById("loginContainer").style.display = "none";
+      document.getElementById("contentContainer").style.display = "block";
+    } else {
+      console.log("User is not logged in, showing login form.");
+    }
+  };
 
   document.addEventListener("keydown", function(e) {
     
