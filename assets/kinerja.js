@@ -577,3 +577,64 @@ document.addEventListener("DOMContentLoaded", function () {
         modalBody.scrollTo({ top: 0, behavior: "smooth" });
     });
 });
+// Function to handle login
+function login() {
+    let username = document.getElementById('username').value;
+    let password = document.getElementById('password').value;
+
+    // Check if username and password are correct
+    if (username === "adminkinerja" && password === "kinerja@dmin") {
+      // Hide the login form and show the content
+      document.getElementById("loginContainer").style.display = "none";
+      document.getElementById("contentContainer").style.display = "block";
+
+      // Show SweetAlert success message for successful login
+      Swal.fire({
+        title: 'Login Berhasil!',
+        text: 'Selamat datang, ' + username + '!',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
+    } else {
+      // Show SweetAlert error message for failed login
+      Swal.fire({
+        title: 'Login Gagal',
+        text: 'Username atau Password salah!',
+        icon: 'error',
+        confirmButtonText: 'Coba Lagi'
+      });
+    }
+  }
+
+  // Function to handle logout
+  function logout() {
+    // Hide the content and show the login form
+    document.getElementById("loginContainer").style.display = "block";
+    document.getElementById("contentContainer").style.display = "none";
+
+    // Show SweetAlert success message for logout
+    Swal.fire({
+      title: 'Logout Berhasil!',
+      text: 'Anda telah keluar.',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    });
+  }
+
+  document.addEventListener("keydown", function(e) {
+    
+    if (e.keyCode == 123) { 
+      e.preventDefault();
+      alert("Terimakasih sudah berkunjung coy!");
+    }
+   
+    if (e.ctrlKey && e.shiftKey && e.keyCode == 73) { 
+      e.preventDefault();
+      alert("Terimakasih sudah berkunjung coy!");
+    }
+    
+    if (e.ctrlKey && e.shiftKey && e.keyCode == 74) { 
+      e.preventDefault();
+      alert("Terimakasih sudah berkunjung coy!");
+    }
+  });
