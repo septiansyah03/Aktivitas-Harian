@@ -268,10 +268,22 @@
   <script src="assets/kinerja.js"></script>
   <script>
     window.onload = function() {
-      const table = document.getElementById('kinerjaTable');
-      table.classList.add('visible'); 
-      displayActivities(); 
-    };
+  // Cek apakah sudah login menggunakan localStorage
+  if (localStorage.getItem('loggedIn') === 'true') {
+    // Tampilkan konten utama jika sudah login
+    document.getElementById('loginContainer').style.display = 'none';
+    document.getElementById('contentContainer').style.display = 'block';
+
+    // Tampilkan tabel dan data aktivitas harian
+    const table = document.getElementById('kinerjaTable');
+    table.classList.add('visible'); 
+    displayActivities(); 
+  } else {
+    // Jika belum login, hanya tampilkan form login
+    document.getElementById('loginContainer').style.display = 'block';
+    document.getElementById('contentContainer').style.display = 'none';
+  }
+};
   </script>
     
 </body>
