@@ -583,7 +583,7 @@ function login() {
     let password = document.getElementById('password').value;
   
     // Check if username and password are correct
-    if (username === "adminkinerja" && password === "Kinerja@dmin") {
+    if (username === "adminkinerja" && password === "Kinerj@dmin") {
       // Save login status to localStorage
       localStorage.setItem('loggedIn', 'true');
       console.log("Login successful, saved to localStorage");
